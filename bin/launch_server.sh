@@ -20,14 +20,13 @@ sleep 20
 echo -e "\n (2) CHECKING DATABASE TABLES \n"
 
 # Create tables
-DB_URL="postgresql+psycopg://postgres:password@127.0.0.1:5433/app"
 CONFIG_PATH="${CONFIG_FILE:-config/global.ini}"
 
-python -u -m answer_gen.storage.db "$DB_URL"
+python -u -m answer_gen.storage.db
 
 echo -e "\n (3) SEEDING VERSION TABLES \n"
-python -u -m answer_gen.storage.seed_chunk_versions "$DB_URL" "$CONFIG_PATH"
-python -u -m answer_gen.storage.seed_answer_versions "$DB_URL" "$CONFIG_PATH"
+python -u -m answer_gen.storage.seed_chunk_versions "$CONFIG_PATH"
+python -u -m answer_gen.storage.seed_answer_versions "$CONFIG_PATH"
 
 echo -e "\n (4) Installing node dependencies \n"
 cd answer_ui/

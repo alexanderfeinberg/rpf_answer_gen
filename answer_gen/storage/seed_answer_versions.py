@@ -7,6 +7,9 @@ from sqlalchemy import select
 from answer_gen.storage import AnswerVersion
 from answer_gen.storage.db import build_bulk_connection
 from answer_gen.utils.config.config_utils import read_config, get_config_str
+import os
+
+from dotenv import load_dotenv
 
 
 def _load_answer_version_name(config_path: str) -> str:
@@ -39,12 +42,18 @@ def seed_answer_versions(db_url: str, config_path: str) -> str:
 
 
 def main(argv: list[str]) -> int:
+    load_dotenv()
+
     if len(argv) < 2:
-        print("Usage: python -m answer_gen.storage.seed_answer_versions <db_url> [config_path]")
+        print("Usage: python -m answer_gen.storage.seed_answer_versions <config_path> <db_url> ")
         return 2
 
-    db_url = argv[1]
-    config_path = argv[2] if len(argv) >= 3 else "config/global.ini"
+    config_path = argv[1] if len(argv) >= 2 else "config/global.ini"
+
+    db_url = argv[2] if len(argv) >= 3 else os.getenv("DATABASE_URL")
+    if not db_url:
+        raise RuntimeError('No database URL provided.')
+
     seed_answer_versions(db_url, config_path)
     return 0
 

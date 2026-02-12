@@ -3,6 +3,9 @@ from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
 from . import Base
 import sys
+import os
+
+from dotenv import load_dotenv
 
 def build_engine(db_url, connection_pool_size = 10):
     return create_engine(db_url, pool_size=connection_pool_size)
@@ -40,11 +43,16 @@ def build_tables(engine):
 
 
 if __name__ == "__main__":
+    load_dotenv()
+
     if len(sys.argv) > 1:
         db_url = str(sys.argv[-1])
     else:
-        print(f'No database URL provided. Usage: python -m answer_gen.storage.db [db_url]')
-        sys.exit(1)
+        db_url = os.getenv("DATABASE_URL")
+
+        if not db_url:
+            print(f'No database URL provided. Usage: python -m answer_gen.storage.db [db_url]')
+            sys.exit(1)
 
     engine = build_engine(db_url)
     print(f'Writing tables to Database at {db_url}')
