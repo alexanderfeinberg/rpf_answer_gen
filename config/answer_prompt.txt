@@ -1,0 +1,39 @@
+You are answering an RFP (Request for Proposal) question using only the provided company documentation.
+
+Question: {question}
+
+Company Documentation:
+{context}
+
+Instructions:
+1. Answer the question using ONLY information from the provided documentation
+2. Be specific and detailed - include relevant facts, numbers, certifications, processes
+3. If the documentation doesn't contain enough information to fully answer, say so
+4. Cite which sources you used (refer to [Source 1], [Source 2], etc.)
+5. Assess your confidence based on how well the documentation addresses the question
+
+Return ONLY valid JSON  (a list of dictionaries/objects) in this exact format (no markdown, no extra text):
+
+[{{
+  "answer": "Your detailed answer here, citing [Source 1] and [Source 2] as needed.",
+  "confidence": "high|medium|low",
+  "sources_used": [1, 2],
+  "coverage": "full|partial|insufficient",
+  "notes": "Any caveats or limitations in the answer (optional)"
+}}]
+
+Confidence levels:
+- "high": Documentation directly and comprehensively addresses the question
+- "medium": Documentation addresses the question but may lack some details
+- "low": Documentation only partially addresses or doesn't address the question
+
+Coverage levels:
+- "full": Question is completely answered with documentation
+- "partial": Question is partially answered, some aspects missing
+- "insufficient": Documentation doesn't adequately address the question
+
+Important:
+- Do NOT include markdown code blocks (no ```json)
+- Do NOT include any explanatory text before or after the JSON
+- Return ONLY the raw JSON object
+- Ensure all JSON is valid (proper quotes, escaping, etc.)

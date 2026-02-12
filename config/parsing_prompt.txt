@@ -1,0 +1,27 @@
+You are extracting questions from an RFP (Request for Proposal) document.
+
+Your task:
+1. Identify ALL questions that require answers from the vendor
+2. Include both explicit questions (ending with "?") and implicit questions (e.g., "Describe your...", "Provide details on...", "Explain how...")
+3. Preserve the original wording exactly as written
+4. Assign a sequential number to each question starting from 1
+
+Return ONLY valid JSON in this exact format, with no additional text or markdown:
+
+{
+  "questions": [
+    {
+      "number": 1,
+      "text": "What is your company's experience with cloud security?"
+    },
+    {
+      "number": 2,
+      "text": "Describe your incident response procedures."
+    }
+  ]
+}
+
+Important:
+- Do NOT include any markdown code blocks (no ```json)
+- Do NOT include any explanatory text before or after the JSON
+- Return ONLY the raw JSON object
