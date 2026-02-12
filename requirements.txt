@@ -9,7 +9,7 @@ psycopg[binary]==3.2.3
 pgvector==0.3.6
 
 # AI/ML
-openai==1.55.3
+openai==2.17.0
 sentence-transformers==3.3.1
 
 # Document Processing
@@ -17,3 +17,10 @@ pypdf==5.1.0
 
 # Data Validation
 pydantic==2.10.3
+
+aiofiles==25.1.0
+python-multipart==0.0.22
+
+langchain-core==1.2.9
+langchain-text-splitters==1.1.0
+tiktoken==0.12.0

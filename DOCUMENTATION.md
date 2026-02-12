@@ -179,7 +179,7 @@ Generates answers for all unanswered questions associated with an RFP.
 Fetches one answer by ID.
 
 - Response (`200`):
-  - `{ "answer": { "id": <id>>, "content": "...", "question_id": <q_id>, "answer_version_id": 1, "created_at": "..." } }`
+  - `{ "answer": { "id": <id>>, "content": "...", "question_id": <q_id>, "answer_version_id": <a_id>, "created_at": "..." } }`
 
 ## Usage
 
@@ -191,9 +191,10 @@ Dependencies:
 1. Create .env file
 2. Copy .env.example into .env file
 3. Set env vars (`LLM_API_KEY`)
-4. Start services (`bin/launch_server.sh`).
-5. Use UI (http://127.0.0.1:5173/) with sample documents in `/docs` to run:
+4. Install dependencies (`pip install -r requirements.txt`)
+5. Start services (`bash bin/launch_server.sh`).
+6. Use UI (http://127.0.0.1:5173/) with sample documents in `/docs` to run:
    - upload company docs,
    - upload RFP,
    - bulk-generate answers.
-6. (Optional): run pytest to check output of tests
+7. (Optional): run pytest to check output of tests

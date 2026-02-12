@@ -93,4 +93,5 @@ app = create_app()
 if __name__ == "__main__":
     port = int(os.getenv("API_PORT", str(DEFAULT_PORT)))
     print(f"Running Document Ingestion API server on {DEFAULT_HOST}:{port}.")
+    print(f'Pulling weights from huggingface for embedding models...')
     uvicorn.run(app, host=DEFAULT_HOST, port=port)

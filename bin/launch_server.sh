@@ -13,7 +13,7 @@ else
 fi
 
 # Wait a few seconds to let Postgres fully boot
-echo -e"\n (1) BUILDING Postgres & pgVector CONTAINER (20 seconds) \n"
+echo -e "\n (1) BUILDING Postgres & pgVector CONTAINER (20 seconds) \n"
 sleep 20
 
 echo -e "\n (2) CHECKING DATABASE TABLES \n"
