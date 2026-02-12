@@ -189,12 +189,14 @@ Dependencies:
 - Python >= 3.11
 - npm >= 8.15.0
 - OpenAI API key (set as LLM_API_KEY in environment variables)
+- Docker Compose
 
 1. Create .env file
 2. Copy .env.example into .env file
 3. Set env vars (`LLM_API_KEY`)
 4. Install dependencies (`pip install -r requirements.txt`)
 5. Start services (`bash bin/launch_server.sh`).
+   - **Note**: Server startup may take a few extra seconds while embedding model weights are downloaded from Hugging Face.
 6. Use UI (http://127.0.0.1:5173/) with sample documents in `/docs` to run:
    - upload company docs,
    - upload RFP,
