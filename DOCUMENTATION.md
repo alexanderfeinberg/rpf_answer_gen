@@ -128,6 +128,8 @@ I used both Codex and Claude Code for the project. AI assistance was used for:
 5. Add answer caching to decrease answer generation endpoint latency
 6. Split the Document Ingestion API and Answer API into seperate services so they can be scaled independently.
 7. Store Question embeddings in storage for rapid retrieval, reducing latency for re-uploaded RFP's.
+8. Add authentication + role-based authorization (e.g., admin/editor/reviewer) to secure upload/generation endpoints and enforce least-privilege access.
+9. Add an optional human-review assignment workflow that routes generated answers/questions to reviewers based on domain expertise tags before final export/approval.
 
 ## API documentation (OpenAPI + key endpoints)
 
@@ -197,4 +199,5 @@ Dependencies:
    - upload company docs,
    - upload RFP,
    - bulk-generate answers.
+   - **Note**: The maximum upload size of a document is defaulted to 10MB.
 7. (Optional): run pytest to check output of tests

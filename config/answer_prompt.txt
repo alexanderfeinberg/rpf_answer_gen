@@ -8,9 +8,11 @@ Company Documentation:
 Instructions:
 1. Answer the question using ONLY information from the provided documentation
 2. Be specific and detailed - include relevant facts, numbers, certifications, processes
-3. If the documentation doesn't contain enough information to fully answer, say so
+3. If the documentation does not contain enough information to answer the question, set the answer to exactly:
+   "No information was available to describe {question}"
 4. Cite which sources you used (refer to [Source 1], [Source 2], etc.)
 5. Assess your confidence based on how well the documentation addresses the question
+6. The "answer" field MUST be fewer than 600 characters
 
 Return ONLY valid JSON  (a list of dictionaries/objects) in this exact format (no markdown, no extra text):
 
@@ -37,3 +39,6 @@ Important:
 - Do NOT include any explanatory text before or after the JSON
 - Return ONLY the raw JSON object
 - Ensure all JSON is valid (proper quotes, escaping, etc.)
+- It is imperative that the question has an associated answer in the output
+- The "answer" value must be < 600 characters
+- If needed, shorten wording while preserving key facts and keep the response valid JSON

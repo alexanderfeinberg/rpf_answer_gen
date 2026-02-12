@@ -1,4 +1,6 @@
 #!/bin/bash
+echo -e "\n (1) BUILDING Postgres & pgVector CONTAINER (20 seconds) \n"
+
 if command -v docker-compose &> /dev/null
 then
     # Bring down any existing docker containers
@@ -13,7 +15,6 @@ else
 fi
 
 # Wait a few seconds to let Postgres fully boot
-echo -e "\n (1) BUILDING Postgres & pgVector CONTAINER (20 seconds) \n"
 sleep 20
 
 echo -e "\n (2) CHECKING DATABASE TABLES \n"
@@ -28,7 +29,6 @@ echo -e "\n (3) SEEDING VERSION TABLES \n"
 python -u -m answer_gen.storage.seed_chunk_versions "$DB_URL" "$CONFIG_PATH"
 python -u -m answer_gen.storage.seed_answer_versions "$DB_URL" "$CONFIG_PATH"
 
-
 echo -e "\n (4) Installing node dependencies \n"
 cd answer_ui/
 npm install
@@ -40,6 +40,3 @@ sleep 2
 echo -e "\n (6) Launching Document Ingestion & Answer API \n"
 cd ../
 python -m answer_gen.server.server
-
-echo -e "\n (7) Pulling down hugging face embedding weights (8 seconds) \n"
-sleep 8

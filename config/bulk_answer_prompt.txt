@@ -7,10 +7,12 @@ Below are the questions with their relevant documentation context:
 Instructions:
 1. Answer EACH question using ONLY the information from its provided documentation
 2. Be specific and detailed - include relevant facts, numbers, certifications, processes
-3. If the documentation doesn't contain enough information to fully answer a question, say so
+3. If the documentation does not contain enough information to answer a question, set that answer field to exactly:
+   "No information was available to describe <question text>"
 4. For each question, cite which sources you used (refer to [Source 1], [Source 2], etc.)
 5. Assess your confidence based on how well the documentation addresses each question
 6. Process all questions and return answers in the same order
+7. Each "answer" value MUST be fewer than 600 characters
 
 Return ONLY valid JSON (a list of answer objects) in this exact format (no markdown, no extra text):
 
@@ -49,4 +51,7 @@ Important:
 - Return ONLY the raw JSON array
 - Ensure all JSON is valid (proper quotes, escaping, etc.)
 - The output array MUST contain the same number of answers as input questions
-- Each answer MUST include the correct question_id fro
+- Each answer MUST include the correct question_id
+- It is imperative that every input question is associated with exactly one answer object
+- Each answer's "answer" text must be < 600 characters
+- If needed, shorten wording while preserving key facts and keep valid JSON for every item

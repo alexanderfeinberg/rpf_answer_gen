@@ -10,7 +10,7 @@ class Answer(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     content = Column(String(600), nullable=False)
     created_at = Column(DateTime, nullable=False, server_default=func.now())
-    question_id = Column(Integer, ForeignKey("questions.id"), nullable=False)
+    question_id = Column(Integer, ForeignKey("questions.id", ondelete="CASCADE"), nullable=False)
     answer_version_id = Column(Integer, ForeignKey("answer_versions.id"), nullable=True)
 
     question = relationship("Question", back_populates="answers")

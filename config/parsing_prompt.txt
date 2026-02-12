@@ -5,6 +5,7 @@ Your task:
 2. Include both explicit questions (ending with "?") and implicit questions (e.g., "Describe your...", "Provide details on...", "Explain how...")
 3. Preserve the original wording exactly as written
 4. Assign a sequential number to each question starting from 1
+5. Each question "text" MUST be fewer than 600 characters
 
 Return ONLY valid JSON in this exact format, with no additional text or markdown:
 
@@ -25,3 +26,5 @@ Important:
 - Do NOT include any markdown code blocks (no ```json)
 - Do NOT include any explanatory text before or after the JSON
 - Return ONLY the raw JSON object
+- Every question "text" must be < 600 characters
+- If a question exceeds 600 characters, rewrite it to a concise equivalent that preserves intent and stays < 600 characters

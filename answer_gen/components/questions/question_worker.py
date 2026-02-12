@@ -10,7 +10,7 @@ from answer_gen.storage import RFP, Question
 from answer_gen.storage.persistence import Persistence
 
 from answer_gen.utils.generative import generate_questions
-from answer_gen.exceptions import EmptyRFP
+from answer_gen.exceptions import EmptyRFP, InvalidGenerativeResponseStructure
 from answer_gen.utils.generative.mappers import map_questions
 
 logger = logging.getLogger(__name__)
@@ -76,7 +76,12 @@ class QuestionWorker:
 
             if to_insert:
                 # Insert only questions that are newly introduced.
-                question_models = map_questions(to_insert, rfp.id)
+                try:
+                    question_models = map_questions(to_insert, rfp.id)
+                except Exception as e:
+                    logger.exception(f'{filename} Failed to map raw questions into Question instances')
+                    raise InvalidGenerativeResponseStructure('Failed to map raw questions into Question instances.')
+
                 store.bulk_insert_questions(question_models)
                 store.commit()
                 existing.extend(question_models)

@@ -78,16 +78,23 @@ class DocumentIngestorWorker:
             logger.info("Deduplicated documents incoming=%s to_insert=%s", len(documents), len(to_insert))
 
             insert_batch: List[Chunk] = []
-            embed_buffer: List[Chunk] = []
 
             for filename, doc_content, doc_hash in to_insert:
+                doc_insert_batch: List[Chunk] = []
+
                 # Each document is inserted first so chunks can reference document ID.
                 document: Document | None = None
                 logger.info("Processing document filename=%s", filename)
                 try:
                     document = self._insert_document(persistence, filename, filename, doc_hash)
-                    self._build_document_chunks(persistence, document, effective_chunk_version,
-                                                doc_content, embed_buffer, insert_batch)
+                    self._build_document_chunks(document, effective_chunk_version, doc_content, doc_insert_batch)
+
+                    # Merge only fully successful document chunks into the shared batch.
+                    if doc_insert_batch:
+                        insert_batch.extend(doc_insert_batch)
+                        if len(insert_batch) >= self._config.max_insert_chunks:
+                            self._bulk_insert_chunks(persistence, insert_batch[: self._config.max_insert_chunks])
+                            del insert_batch[: self._config.max_insert_chunks]
                 except exceptions.StorageWriteError as e:
                     logger.warning("Document insert failed filename=%s error=%s", filename, str(e))
                     failed_docs[filename] = str(e)
@@ -104,12 +111,9 @@ class DocumentIngestorWorker:
                     "Document ingestion staged filename=%s document_id=%s buffered_chunks=%s pending_chunks=%s",
                     filename,
                     document.id,
-                    len(embed_buffer),
+                    len(doc_insert_batch),
                     len(insert_batch),
                 )
-
-            if embed_buffer:
-                self._handle_buffer_flush(embed_buffer, insert_batch)
 
             if insert_batch:
                 self._bulk_insert_chunks(persistence, insert_batch)
@@ -130,21 +134,22 @@ class DocumentIngestorWorker:
         )
         return inserted_ids, failed_docs
 
-    def _build_document_chunks(self, store : Persistence, document : Document,
-                               chunk_version : ChunkVersion, doc_content, embed_buffer : list, insert_batch : list):
+    def _build_document_chunks(self, document : Document,
+                               chunk_version : ChunkVersion, doc_content, insert_batch : list):
         """Build chunks for one document and flush buffered embeddings/inserts in batches."""
+        embed_buffer: List[Chunk] = []
+        embed_buffer_size = self._config.embed_buffer_size or 512
         chunk_count = 0
         for chunk in self._build_chunks(document.id, doc_content, chunk_version.id):
             # Buffer chunks so embeddings and inserts can be batched.
             embed_buffer.append(chunk)
             chunk_count += 1
 
-            if len(embed_buffer) >= self._config.embed_buffer_size:
+            if len(embed_buffer) >= embed_buffer_size:
                 self._handle_buffer_flush(embed_buffer, insert_batch)
 
-            if len(insert_batch) >= self._config.max_insert_chunks:
-                self._bulk_insert_chunks(store, insert_batch[: self._config.max_insert_chunks])
-                del insert_batch[: self._config.max_insert_chunks]
+        if embed_buffer:
+            self._handle_buffer_flush(embed_buffer, insert_batch)
 
         logger.info(
             "Built chunks for document document_id=%s chunk_count=%s",

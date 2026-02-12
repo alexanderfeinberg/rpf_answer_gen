@@ -8,7 +8,7 @@ class GenerativeAnswerResponse(BaseModel):
 
     answer : str
     confidence : str | None
-    sources : list[int]
+    sources : list[int] | int | str
     coverage : str | None
     notes : str | None
 
@@ -18,7 +18,7 @@ class GenerativeAnswerResponse(BaseModel):
         return GenerativeAnswerResponse(
             answer = data.get("answer", None),
             confidence = data.get("confidence", None),
-            sources = data.get("sources_used", None),
+            sources = data.get("sources_used", []),
             coverage = data.get("coverage", None),
             notes = data.get("notes", None)
         )

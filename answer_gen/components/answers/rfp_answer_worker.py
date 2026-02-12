@@ -10,6 +10,7 @@ from answer_gen.storage import Answer, Question
 from answer_gen.utils.embedder import Embedder
 from answer_gen.utils.generative import generate_answers
 from answer_gen.utils.generative.mappers import map_answers
+from answer_gen.utils.generative.parsers.answer_parser import GenerativeAnswerResponse
 from answer_gen.utils.config.answer_worker_config import BulkAnswerWorkerConfig
 
 from answer_gen.exceptions import DatabaseQueryError
@@ -106,6 +107,7 @@ class RfpBulkAnswerWorker:
                 raise
 
             # Map generated responses back to question IDs.
+            responses = self._normalize_responses(questions, responses)
             mapped_all = map_answers(
                 responses,
                 [q.id for q in questions],
@@ -118,6 +120,38 @@ class RfpBulkAnswerWorker:
             }
 
             return new_answers, new_answers_by_q
+
+    def _normalize_responses(
+        self,
+        questions: list[Question],
+        responses: list[GenerativeAnswerResponse],
+    ) -> list[GenerativeAnswerResponse]:
+        """Force a 1:1 response/question mapping by trimming or padding with fallback answers."""
+        expected = len(questions)
+        actual = len(responses)
+        if actual == expected:
+            return responses
+
+        logger.warning(
+            "Bulk LLM response size mismatch expected=%s actual=%s model=%s; normalizing output",
+            expected,
+            actual,
+            self._config.answer_model,
+        )
+
+        normalized = list(responses[:expected])
+        if len(normalized) < expected:
+            for question in questions[len(normalized):]:
+                normalized.append(
+                    GenerativeAnswerResponse(
+                        answer=f"No information was available to describe {question.content}",
+                        confidence="low",
+                        sources=[],
+                        coverage="insufficient",
+                        notes="Generated fallback due to missing LLM answer for this question.",
+                    )
+                )
+        return normalized
 
     def _build_prompt(self, store : Persistence, questions, embeddings) -> list:
         """Build per-question prompt payloads with retrieval context from similar chunks."""

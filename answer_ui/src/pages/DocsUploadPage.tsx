@@ -15,6 +15,13 @@ export default function DocsUploadPage() {
   // Computed once per base URL change so UI always points to the active backend.
   const uploadUrl = useMemo(() => `${docApiBase}/api/documents/upload`, [docApiBase]);
 
+  function onFilesChange(nextFiles: File[]) {
+    // New selection starts a new upload attempt, so clear stale status cards.
+    setFiles(nextFiles);
+    setResult(null);
+    setErr(null);
+  }
+
   async function onSubmit() {
     setErr(null);
     setResult(null);
@@ -49,11 +56,11 @@ export default function DocsUploadPage() {
           mode="multi"
           helper="Select multiple PDFs. You can drag-and-drop, remove individual files, or clear the whole set."
           files={files}
-          onChange={setFiles}
+          onChange={onFilesChange}
         />
 
         <div className="actions">
-          <button className="btn" onClick={onSubmit} disabled={busy}>
+          <button className="btn" onClick={onSubmit} disabled={busy || files.length === 0}>
             {busy ? "Uploading..." : "Upload"}
           </button>
           <div className="muted small">

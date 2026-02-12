@@ -15,8 +15,6 @@ class Question(Base):
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     rfp_id = Column(Integer, ForeignKey("rfps.id"), nullable=False)
 
-    # TODO: add question versoining
-
     rfp = relationship("RFP", back_populates="questions")
     answers = relationship("Answer", back_populates="question", cascade="all, delete-orphan")
 

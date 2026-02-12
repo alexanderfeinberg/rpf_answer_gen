@@ -20,6 +20,7 @@ type BulkAnswersResp = {
 export default function RfpUploadPage() {
   const { docApiBase, answerApiBase } = getApiBases();
   const [files, setFiles] = useState<File[]>([]);
+  const [lastUploadedFilename, setLastUploadedFilename] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<UploadResp | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -34,6 +35,16 @@ export default function RfpUploadPage() {
     [answerApiBase],
   );
 
+  function onFilesChange(nextFiles: File[]) {
+    // New selection starts a new flow, so clear prior ingest/generation results.
+    setFiles(nextFiles);
+    setLastUploadedFilename(null);
+    setResult(null);
+    setAnswers(null);
+    setGenErr(null);
+    setErr(null);
+  }
+
   async function onSubmit() {
     setErr(null);
     setResult(null);
@@ -44,6 +55,7 @@ export default function RfpUploadPage() {
       setErr("Pick a PDF file.");
       return;
     }
+    setLastUploadedFilename(file.name);
     const form = new FormData();
     form.append("rfp", file, file.name);
 
@@ -87,11 +99,11 @@ export default function RfpUploadPage() {
           label="RFP upload"
           helper="Select the RFP PDF. The backend extracts questions and stores them in the database."
           files={files}
-          onChange={setFiles}
+          onChange={onFilesChange}
         />
 
         <div className="actions">
-          <button className="btn" onClick={onSubmit} disabled={busy}>
+          <button className="btn" onClick={onSubmit} disabled={busy || files.length === 0}>
             {busy ? "Uploading..." : "Upload"}
           </button>
           <div className="muted small">
@@ -110,6 +122,9 @@ export default function RfpUploadPage() {
       {result ? (
         <div className="alert alert--ok">
           <div className="alert__title">RFP ingested</div>
+          <div className="alert__body">
+            Filename: <code>{lastUploadedFilename ?? "unknown"}</code>
+          </div>
           <div className="alert__body">
             RFP id: <code>{result.rfp_id}</code>
           </div>

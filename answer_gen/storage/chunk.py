@@ -1,5 +1,5 @@
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, func, UniqueConstraint, Index
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, func, UniqueConstraint, Index, Text
 from sqlalchemy.orm import relationship
 
 from . import Base
@@ -14,7 +14,7 @@ class Chunk(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     doc_id = Column(Integer, ForeignKey("documents.id"), nullable=False)
     order = Column(Integer, nullable = False)
-    content = Column(String(1000), nullable=False)
+    content = Column(Text, nullable=False)
     embedding = Column(Vector(), nullable=True)
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
