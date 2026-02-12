@@ -76,7 +76,7 @@ class AnswerWorker:
                 raise
 
             if answer_response is None:
-                logger.exceptiom(
+                logger.exception(
                     "No answer returned from generator question_id=%s model=%s",
                     question_id,
                     self._config.answer_model,
