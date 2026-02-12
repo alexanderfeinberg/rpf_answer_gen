@@ -40,7 +40,6 @@ Thumbs.db
 
 # Secrets / local config
 .env
-.env.*
 
 # VS Code
 .vscode/*
